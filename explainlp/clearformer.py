@@ -14,12 +14,17 @@ class Clearformer(BaseEstimator, TransformerMixin):
         """Fits the centroids to the data
         X should have the following cols:
             0: topic_num
-            1: probs
+            1: probs (optional)
             2-n: embeddings
         """
         topics = X[:, 0]
-        probs = X[:, 1]
-        embeddings = X[:, 2:]
+        # CHeck if topics
+        if not np.any(np.isnan(X[:, 1])):
+            probs = X[:, 1]
+            embeddings = X[:, 2:]
+        else:
+            probs = None
+            embeddings = X[:, 1:]
 
         umap_embeddings = self.topic_model.umap_model.transform(embeddings)
         self.centroids = np.zeros(
@@ -29,26 +34,6 @@ class Clearformer(BaseEstimator, TransformerMixin):
             self.centroids[i, :] += self._find_centroid(
                 umap_embeddings, topics, probs, i
             )
-
-    def transform_row(self, embeddings: np.ndarray) -> np.ndarray:
-        """Transforms one document (with potentially multiple paragraphs) into features
-        args:
-            embeddings: np.ndarray (n_paragraphs, embedding_size)
-        returns:
-            The similarity to each of the clusters (n_cluster, )
-        """
-        try:
-            return np.mean(cosine_similarity(embeddings, self.centroids), axis=0)
-        except ValueError as e:
-            if "Reshape" in str(e):
-                # Reshape to (1, n)-array
-                return self.transform(embeddings.reshape(1, -1))
-            elif "0 sample" in str(e):
-                nan_result = np.zeros((self.centroids.shape[0],))
-                nan_result.fill(np.nan)
-                return nan_result
-            else:
-                raise e
 
     def transform(self, X: np.ndarray) -> np.ndarray:
         """
@@ -64,17 +49,6 @@ class Clearformer(BaseEstimator, TransformerMixin):
                 return self.transform(new_X)
             else:
                 raise
-
-    def calculate_centroids(
-        self, topics: np.ndarray, probs: np.ndarray, embeddings: np.ndarray
-    ) -> np.ndarray:
-        unique_topics = self._get_topic_range(topics)
-        self.centroids = np.zeros(
-            (len(unique_topics), embeddings.shape[1])
-        )  # Centroids need dimensions (number of topics, embedding-dimensionality)
-        for i in unique_topics:
-            self.centroids[i, :] += self._find_centroid(embeddings, topics, probs, i)
-        return self.centroids
 
     def weighted_mean(
         self, X: np.ndarray, weights: Sequence[Union[int, float]]
@@ -97,6 +71,8 @@ class Clearformer(BaseEstimator, TransformerMixin):
         returns:
             The centroid for the cluster
         """
+        if probs is None:  # Simple average
+            return np.mean(embeddings[topics == target_topic, :], axis=0)
         # Filtering the embeddings
         filtered_embeddings = embeddings[topics == target_topic, :]
         filtered_probs = probs[topics == target_topic]
