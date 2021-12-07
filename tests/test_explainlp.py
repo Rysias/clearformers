@@ -39,6 +39,7 @@ def probs():
     return np.random.rand(50)
 
 
+# TODO: FIX!
 @pytest.fixture(scope="session")
 def topic_model():
     return BERTopic.load(str(Path("../TransTopicXAI/models/topic_model")))
@@ -46,16 +47,12 @@ def topic_model():
 
 @pytest.fixture(scope="session")
 def model(topic_model):
-    return ClearSearch(
-        topic_model=topic_model,
-    )
+    return ClearSearch(topic_model=topic_model,)
 
 
 @pytest.fixture(scope="session")
 def clearsifier(topic_model, topics, embeddings, probs):
-    clf = Clearsifier(
-        topic_model=topic_model,
-    )
+    clf = Clearsifier(topic_model=topic_model,)
     clf.calculate_centroids(topics, probs, embeddings)
     return clf
 
