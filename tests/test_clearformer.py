@@ -15,23 +15,13 @@ def read_pickle(file_path):
 
 @pytest.fixture(scope="session")
 def topics():
-    return np.random.choice(list(range(-1, 5)), 50)
-
-
-@pytest.fixture(scope="session")
-def real_embeddings():
-    return read_pickle(Path("./tests/example_embeddings.pkl"))
-
-
-@pytest.fixture(scope="session")
-def real_docs():
-    return read_pickle(Path("./tests/example_docs.pkl"))
+    return np.random.choice(list(range(-1, 10)), 50)
 
 
 @pytest.fixture(scope="session")
 def embeddings():
     """random embeddings in the range (-5, 5)"""
-    return (np.random.rand(50, 256) - 0.5) * 10
+    return (np.random.rand(50, 757) - 0.5) * 10
 
 
 @pytest.fixture(scope="session")
@@ -39,10 +29,9 @@ def probs():
     return np.random.rand(50)
 
 
-# TODO: FIX!
 @pytest.fixture(scope="session")
 def topic_model():
-    return BERTopic.load(str(Path("../TransTopicXAI/models/topic_model")))
+    return BERTopic.load(str(Path("../TransTopicXAI/models/20211206_1223_topic_model")))
 
 
 @pytest.fixture(scope="session")
