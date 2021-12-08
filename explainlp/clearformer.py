@@ -48,6 +48,10 @@ class Clearformer(BaseEstimator, TransformerMixin):
             if "Incompatible dimension" in str(e):
                 new_X = X[:, 2:]
                 return self.transform(new_X)
+            # SUPER HACKY PLS REMOVE!
+            elif "n_features" in str(e):
+                new_X = X[:, 1:]
+                return self.transform(new_X)
             else:
                 raise
 
