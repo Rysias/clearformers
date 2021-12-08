@@ -34,6 +34,7 @@ class Clearformer(BaseEstimator, TransformerMixin):
             self.centroids[i, :] += self._find_centroid(
                 umap_embeddings, topics, probs, i
             )
+        return self
 
     def transform(self, X: np.ndarray) -> np.ndarray:
         """
