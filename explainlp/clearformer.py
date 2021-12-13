@@ -32,16 +32,8 @@ class Clearformer(BaseEstimator, TransformerMixin):
         try:
             umap_embeddings = self.topic_model.umap_model.transform(X)
             return cosine_similarity(umap_embeddings, self.centroids)
-        except ValueError as e:
-            if "Incompatible dimension" in str(e):
-                new_X = X[:, 2:]
-                return self.transform(new_X)
-            # SUPER HACKY PLS REMOVE!
-            elif "n_features" in str(e):
-                new_X = X[:, 1:]
-                return self.transform(new_X)
-            else:
-                raise
+        except ValueError:
+            raise
 
     def weighted_mean(
         self, X: np.ndarray, weights: Sequence[Union[int, float]]
