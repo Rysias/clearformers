@@ -12,6 +12,7 @@ class Clearformer(BaseEstimator, TransformerMixin):
 
     def fit(self, X: np.ndarray):
         """Fits the centroids to the data"""
+        # How to solve this weird overhead of double UMAP?
         umap_embeddings = self.topic_model.umap_model.transform(X)
         docs = ["i" for _ in range(X.shape[0])]
         topics, probs = self.topic_model.transform(docs, X)
