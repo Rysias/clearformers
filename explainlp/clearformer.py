@@ -17,16 +17,9 @@ class Clearformer(BaseEstimator, TransformerMixin):
             1: probs (optional)
             2-n: embeddings
         """
-        topics = X[:, 0]
-        # CHeck if topics
-        if not np.any(np.isnan(X[:, 1])):
-            probs = X[:, 1]
-            embeddings = X[:, 2:]
-        else:
-            probs = None
-            embeddings = X[:, 1:]
-
-        umap_embeddings = self.topic_model.umap_model.transform(embeddings)
+        umap_embeddings = self.topic_model.umap_model.transform(X)
+        docs = ["i" for _ in range(X.shape[0])]
+        topics, probs = self.topic_model.transform(docs, X)
         self.centroids = np.zeros(
             (self.nr_topics, umap_embeddings.shape[1])
         )  # Centroids need dimensions (number of topics, embedding-dimensionality)
