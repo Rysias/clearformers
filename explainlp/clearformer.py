@@ -11,12 +11,7 @@ class Clearformer(BaseEstimator, TransformerMixin):
         self.nr_topics = self.topic_model.nr_topics
 
     def fit(self, X: np.ndarray):
-        """Fits the centroids to the data
-        X should have the following cols:
-            0: topic_num
-            1: probs (optional)
-            2-n: embeddings
-        """
+        """Fits the centroids to the data"""
         umap_embeddings = self.topic_model.umap_model.transform(X)
         docs = ["i" for _ in range(X.shape[0])]
         topics, probs = self.topic_model.transform(docs, X)
