@@ -14,6 +14,7 @@ setuptools.setup(
         "bertopic==0.9.3",
         "matplotlib",
     ],
+    extras_requires={"dev": ["pytest", "python-semantic-release"]},
     author_email="jhvithamar@gmail.com",
     packages=setuptools.find_packages(),
     zip_safe=False,
