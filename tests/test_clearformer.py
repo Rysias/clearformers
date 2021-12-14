@@ -40,17 +40,9 @@ def model(topic_model):
 
 
 @pytest.fixture(scope="session")
-def clearsifier(topic_model, topics, embeddings, probs):
-    clf = Clearsifier(topic_model=topic_model,)
-    clf.calculate_centroids(topics, probs, embeddings)
-    return clf
-
-
-@pytest.fixture(scope="session")
-def clearformer(topic_model, topics, embeddings, probs):
-    X = np.hstack((topics[:, np.newaxis], probs[:, np.newaxis], embeddings))
+def clearformer(topic_model, embeddings):
     clearformer = Clearformer(topic_model)
-    clearformer.fit(X)
+    clearformer.fit(embeddings)
     return clearformer
 
 
