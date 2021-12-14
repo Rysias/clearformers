@@ -1,8 +1,10 @@
 import setuptools
 
+__version__ = "0.0.1"
+
 setuptools.setup(
     name="clearformer",
-    version="0.1",
+    version=__version__,
     description="Creating explainable embeddings",
     url="#",
     author="Jonathan Rystroem",
