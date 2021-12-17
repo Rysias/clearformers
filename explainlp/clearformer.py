@@ -1,8 +1,27 @@
 import numpy as np
+import hdbscan
 from bertopic import BERTopic
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics.pairwise import cosine_similarity
-from typing import Union, Sequence, Iterable, Dict, List
+from typing import Optional, Tuple, Union, Sequence, Iterable, Dict, List
+
+
+def transform_with_umap(
+    topic_model: BERTopic, umap_embeddings: np.ndarray
+) -> Tuple[np.ndarray, Optional[np.ndarray]]:
+    """ Same method as BERTopic.transform but uses umap embeddings to skip double calculations"""
+    predictions, probabilities = hdbscan.approximate_predict(
+        topic_model.hdbscan_model, umap_embeddings
+    )
+    if topic_model.calculate_probabilities:
+        probabilities = hdbscan.membership_vector(
+            topic_model.hdbscan_model, umap_embeddings
+        )
+    else:
+        probabilities = None
+    probabilities = topic_model._map_probabilities(probabilities, original_topics=True)
+    predictions = topic_model._map_predictions(predictions)
+    return np.array(predictions), probabilities
 
 
 class Clearformer(BaseEstimator, TransformerMixin):
@@ -18,8 +37,7 @@ class Clearformer(BaseEstimator, TransformerMixin):
         """Fits the centroids to the data"""
         # How to solve this weird overhead of double UMAP?
         umap_embeddings = self.topic_model.umap_model.transform(X)
-        docs = ["i" for _ in range(X.shape[0])]
-        topics, probs = self.topic_model.transform(docs, X)
+        topics, probs = transform_with_umap(self.topic_model, umap_embeddings)
         self.centroids = np.zeros(
             (self.nr_topics, umap_embeddings.shape[1])
         )  # Centroids need dimensions (number of topics, embedding-dimensionality)
