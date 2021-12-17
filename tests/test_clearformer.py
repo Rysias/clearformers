@@ -5,6 +5,7 @@ from pathlib import Path
 from bertopic import BERTopic
 from explainlp.clearformer import Clearformer
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 
 
@@ -47,3 +48,10 @@ def test_pipeline(clearformer, embeddings):
     embs = pipe.fit_transform(embeddings)
     assert np.max(embs == 1)
     assert embs.shape == (500, 2)
+
+
+def test_pipeline(clearformer, embeddings):
+    y = np.random.choice([1, 0], size=embeddings.shape[0])
+    pipe = make_pipeline(clearformer, MinMaxScaler(), LogisticRegression())
+    pipe.fit(embeddings, y)
+    testy = pipe.predict(embeddings)

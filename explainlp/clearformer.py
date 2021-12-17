@@ -33,7 +33,7 @@ class Clearformer(BaseEstimator, TransformerMixin):
             else len(self.topic_model.get_topics()) - 1
         )
 
-    def fit(self, X: np.ndarray):
+    def fit(self, X: np.ndarray, y=None):
         """Fits the centroids to the data"""
         # How to solve this weird overhead of double UMAP?
         umap_embeddings = self.topic_model.umap_model.transform(X)
@@ -47,7 +47,7 @@ class Clearformer(BaseEstimator, TransformerMixin):
             )
         return self
 
-    def transform(self, X: np.ndarray) -> np.ndarray:
+    def transform(self, X: np.ndarray, y=None) -> np.ndarray:
         """
         featurizes multiple documents where each document is a numpy array of shape (n_paragraphs, embedding_dim)
         Also works if input is a (n_docs, embedding_dim) numpy array
