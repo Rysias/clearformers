@@ -47,7 +47,7 @@ class Clearformer(BaseEstimator, TransformerMixin):
             )
         return self
 
-    def transform(self, X: np.ndarray, y=None) -> np.ndarray:
+    def transform(self, X: np.ndarray) -> np.ndarray:
         """
         featurizes multiple documents where each document is a numpy array of shape (n_paragraphs, embedding_dim)
         Also works if input is a (n_docs, embedding_dim) numpy array
