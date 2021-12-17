@@ -12,19 +12,9 @@ def read_pickle(file_path):
 
 
 @pytest.fixture(scope="session")
-def topics():
-    return np.random.choice(list(range(-1, 10)), 50)
-
-
-@pytest.fixture(scope="session")
 def embeddings():
     """random embeddings in the range (-5, 5)"""
-    return (np.random.rand(50, 384) - 0.5) * 10
-
-
-@pytest.fixture(scope="session")
-def probs():
-    return np.random.rand(50)
+    return np.load(Path("tests/example_embeddings.npy"))
 
 
 @pytest.fixture(scope="session")
@@ -39,7 +29,13 @@ def clearformer(topic_model, embeddings):
     return clearformer
 
 
+def test_fit(clearformer, embeddings):
+    clearformer.fit(embeddings)
+    assert hasattr(clearformer, "centroids")
+    assert clearformer.centroids.shape == (2, 5)
+
+
 def test_clearformer_simple_transform(clearformer, embeddings):
     topx = clearformer.transform(embeddings)
-    assert topx.shape == (50, 2)
+    assert topx.shape == (500, 2)
 

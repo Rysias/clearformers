@@ -8,9 +8,13 @@ from typing import Union, Sequence, Iterable, Dict, List
 class Clearformer(BaseEstimator, TransformerMixin):
     def __init__(self, topic_model: BERTopic) -> None:
         self.topic_model = topic_model
-        self.nr_topics = self.topic_model.nr_topics
+        self.nr_topics = (
+            self.topic_model.nr_topics
+            if self.topic_model.nr_topics is not None
+            else len(self.topic_model.get_topics()) - 1
+        )
 
-    def fit(self, X: np.ndarray, y=None):
+    def fit(self, X: np.ndarray):
         """Fits the centroids to the data"""
         # How to solve this weird overhead of double UMAP?
         umap_embeddings = self.topic_model.umap_model.transform(X)
@@ -57,6 +61,7 @@ class Clearformer(BaseEstimator, TransformerMixin):
         returns:
             The centroid for the cluster
         """
+        topics = np.array(topics)
         if probs is None:  # Simple average
             return np.mean(embeddings[topics == target_topic, :], axis=0)
         # Filtering the embeddings
