@@ -55,3 +55,4 @@ def test_pipeline(clearformer, embeddings):
     pipe = make_pipeline(clearformer, MinMaxScaler(), LogisticRegression())
     pipe.fit(embeddings, y)
     testy = pipe.predict(embeddings)
+    assert testy.shape[0] == embeddings.shape[0]
