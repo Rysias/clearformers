@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 import hdbscan
 from bertopic import BERTopic
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -26,15 +27,16 @@ def transform_with_umap(
 
 class Clearformer(BaseEstimator, TransformerMixin):
     def __init__(self, topic_model: BERTopic) -> None:
-        self.topic_model = topic_model
+        self.topic_model = copy.deepcopy(topic_model)
+
+    def fit(self, X: np.ndarray, y=None):
+        """Fits the centroids to the data"""
+
         self.nr_topics = (
             self.topic_model.nr_topics
             if self.topic_model.nr_topics is not None
             else len(self.topic_model.get_topics()) - 1
         )
-
-    def fit(self, X: np.ndarray, y=None):
-        """Fits the centroids to the data"""
         # How to solve this weird overhead of double UMAP?
         umap_embeddings = self.topic_model.umap_model.transform(X)
         topics, probs = transform_with_umap(self.topic_model, umap_embeddings)
