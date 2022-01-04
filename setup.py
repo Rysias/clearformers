@@ -11,7 +11,7 @@ setuptools.setup(
     install_requires=[
         "scikit-learn==1.0.1",
         "numpy>=1.20.0",
-        "bertopic==0.9.3",
+        "bertopic>=0.9.3",
         "matplotlib",
     ],
     extras_requires={"dev": ["pytest", "python-semantic-release"]},
