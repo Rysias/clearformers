@@ -6,7 +6,7 @@ setuptools.setup(
     name="clearformer",
     version=__version__,
     description="Creating explainable embeddings",
-    url="#",
+    url="https://github.com/Rysias/clearformers/",
     author="Jonathan Rystroem",
     install_requires=[
         "scikit-learn==1.0.1",
