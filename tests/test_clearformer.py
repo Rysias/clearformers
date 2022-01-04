@@ -2,11 +2,11 @@ import pytest
 import numpy as np
 import pickle
 from pathlib import Path
-from bertopic import BERTopic
+from bertopic import BERTopic  # type: ignore
 from explainlp.clearformer import Clearformer
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import MinMaxScaler  # type: ignore
+from sklearn.linear_model import LogisticRegression  # type: ignore
+from sklearn.pipeline import make_pipeline  # type: ignore
 
 
 def read_pickle(file_path):
@@ -43,14 +43,14 @@ def test_clearformer_simple_transform(clearformer, embeddings):
     assert topx.shape == (500, 2)
 
 
-def test_pipeline(clearformer, embeddings):
+def test_transformation_pipeline(clearformer, embeddings):
     pipe = make_pipeline(clearformer, MinMaxScaler())
     embs = pipe.fit_transform(embeddings)
     assert np.max(embs == 1)
     assert embs.shape == (500, 2)
 
 
-def test_pipeline(clearformer, embeddings):
+def test_predict_pipeline(clearformer, embeddings):
     y = np.random.choice([1, 0], size=embeddings.shape[0])
     pipe = make_pipeline(clearformer, MinMaxScaler(), LogisticRegression())
     pipe.fit(embeddings, y)

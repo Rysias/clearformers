@@ -1,9 +1,9 @@
 import numpy as np
 import copy
-import hdbscan
-from bertopic import BERTopic
-from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.metrics.pairwise import cosine_similarity
+import hdbscan  # type: ignore
+from bertopic import BERTopic  # type: ignore
+from sklearn.base import BaseEstimator, TransformerMixin  # type: ignore
+from sklearn.metrics.pairwise import cosine_similarity  # type: ignore
 from typing import Optional, Tuple, Union, Sequence, Iterable, Dict, List
 
 
@@ -69,7 +69,7 @@ class Clearformer(BaseEstimator, TransformerMixin):
         self,
         embeddings: np.ndarray,
         topics: np.ndarray,
-        probs: np.ndarray,
+        probs: Optional[np.ndarray],
         target_topic: int,
     ) -> np.ndarray:
         """

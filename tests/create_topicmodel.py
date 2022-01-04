@@ -3,8 +3,8 @@ import random
 from typing import Any
 import numpy as np
 import pickle
-from bertopic import BERTopic
-from sklearn.datasets import fetch_20newsgroups
+from bertopic import BERTopic  # type: ignore
+from sklearn.datasets import fetch_20newsgroups  # type: ignore
 
 
 def dump_pickle(obj: Any, path: Path) -> None:
